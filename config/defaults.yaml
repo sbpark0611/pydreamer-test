@@ -257,6 +257,14 @@ procgen:
   action_dim: 15
   kl_weight: 0.1
 
+mpg:
+  env_id: memory_planning_game
+  action_dim: 5
+  vecobs_size: 4
+  image_key:
+  image_encoder:
+  image_decoder:
+
 debug:
   device: cpu
   log_interval: 5
