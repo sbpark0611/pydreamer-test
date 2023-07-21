@@ -261,7 +261,7 @@ debug:
   device: cpu
   log_interval: 5
   save_interval: 10
-  data_workers: 0
+  data_workers: 4
   generator_workers: 1
   generator_prefill_steps: 10_000
   batch_length: 15
