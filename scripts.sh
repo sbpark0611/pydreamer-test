@@ -1,11 +1,11 @@
 #!/bin/sh
-#SBATCH -J gpu_test_rtx
+#SBATCH -J gpu_test_cpu
 #SBATCH -N 1
 #SBATCH --mem=0
 #SBATCH -n 1
 #SBATCH -c 2
 #sbatch --gres=gpu:1
-#SBATCH -p jepyc-rtx
+#SBATCH -p HQ2comp
 #SBATCH -o %x.out
 #SBATCH -e %x.err
 #SBATCH -D /mnt/lustre/ibs/dscig/kdkyum/workdir/pydreamer-test
