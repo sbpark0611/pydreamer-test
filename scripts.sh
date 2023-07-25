@@ -2,7 +2,7 @@
 #SBATCH -J rtx_test
 #SBATCH -N 1
 #SBATCH --mem=0
-#SBATCH -c 0
+#SBATCH -n 1
 #sbatch --gres=gpu:1
 #SBATCH -p jepyc-rtx
 #SBATCH -o %x.out
