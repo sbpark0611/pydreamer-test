@@ -4,6 +4,7 @@ warnings.filterwarnings("ignore", ".*Box bound precision lowered by casting")  #
 
 import gym
 import numpy as np
+import os
 
 from .wrappers import *
 
@@ -58,10 +59,14 @@ def create_env(env_id: str, no_terminal: bool, env_time_limit: int, env_action_r
         env = EmbodiedEnv(task, action_repeat=env_action_repeat, time_limit=env_time_limit)
         env_time_limit = 0  # This is handled by embodied.Env
 
+    elif env_id.startswith('memory_maze'):
+        os.environ['MUJOCO_GL'] = 'glfw'
+        env = gym.make(env_id)
+        env = DictWrapper(env)
+
     elif env_id.startswith('memory_planning_game'):
         from .memory_planning_game import MemoryPlanningGame
         env = MemoryPlanningGame()
-
 
     else:
         env = gym.make(env_id)
