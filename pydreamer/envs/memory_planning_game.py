@@ -42,7 +42,7 @@ class MemoryPlanningGame(gym.Env):
         self,
         maze_size=4,
         num_maze=-1,
-        max_episode_steps=100,
+        max_episode_steps=128,
         target_reward=1.0,
         per_step_reward=0.0,
         num_labels=16,

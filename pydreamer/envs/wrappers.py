@@ -108,7 +108,11 @@ class OneHotActionWrapper(gym.Wrapper):
         return self.env.step(action)
 
     def reset(self):
-        return self.env.reset()
+        r = self.env.reset()
+        print("\n\n\n\n\n\n")
+        print(r.shape)
+        print("\n\n\n\n\n\n")
+        return r
 
 
 class RestartOnExceptionWrapper(gym.Wrapper):

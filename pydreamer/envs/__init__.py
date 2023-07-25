@@ -67,6 +67,7 @@ def create_env(env_id: str, no_terminal: bool, env_time_limit: int, env_action_r
     elif env_id.startswith('memory_planning_game'):
         from .memory_planning_game import MemoryPlanningGame
         env = MemoryPlanningGame()
+        env = DictWrapper(env)
 
     else:
         env = gym.make(env_id)
