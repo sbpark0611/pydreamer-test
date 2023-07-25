@@ -41,15 +41,16 @@ class MemoryPlanningGame(gym.Env):
     def __init__(
         self,
         maze_size=4,
-        num_maze=10,
+        num_maze=-1,
         max_episode_steps=100,
         target_reward=1.0,
         per_step_reward=0.0,
-        num_labels=10,
+        num_labels=16,
         render_mode=None,
         maps=None,
         dict_space=True,
         pretrain=False,
+        no_duplication=True,
         seed=None,
     ):
         super(MemoryPlanningGame, self).__init__()
@@ -64,6 +65,11 @@ class MemoryPlanningGame(gym.Env):
         self._oracle_min_num_actions = _oracle_min_actions(self._maze_size)
         self._pretrain_mode = pretrain
         self._test = False
+        self._reverse = False
+        self._no_duplication = no_duplication
+
+        if self._no_duplication:
+            self._num_labels = self._maze_size ** 2
 
         self.pos2idx = {n: i for i, n in enumerate(self._graph.nodes())}
 
@@ -114,17 +120,14 @@ class MemoryPlanningGame(gym.Env):
 
     def _get_obs(self):
         if self.dict_space:
-            return {
-                "vecobs": np.array([(self.position - 4.5) / 4.5, (self.goal - 4.5) / 4.5, (self.previous_action - 2) / 2, 1 if self.is_respawn else 0])
-            }
-            '''
-            return {
-                "position": self.position,
-                "goal": self.goal,
-                "prev_action": self.previous_action,
-                "reward": 1 if self.is_respawn else 0,
-            }
-            '''
+            return OrderedDict(
+                [
+                    ("position", self.position),
+                    ("goal", self.goal),
+                    ("prev_action", self.previous_action),
+                    ("reward", 1 if self.is_respawn else 0),
+                ]
+            )
         else:
             return [
                 self.position,
@@ -172,7 +175,7 @@ class MemoryPlanningGame(gym.Env):
 
         return self._get_obs(), reward, done, False, self._get_info()
 
-    def reset(self, reversal=False, seed=None):
+    def reset(self, seed=None):
         super().reset(seed=seed)
 
         self._prev_action = 5
@@ -180,9 +183,13 @@ class MemoryPlanningGame(gym.Env):
         self._episode_reward = 0.0
         self._episode_steps = 0
         if self._test or self._num_maze <= 0:
-            random_labels = self.np_random.integers(
-                0, self._num_labels, size=(self._maze_size**2,)
-            )
+            if self._no_duplication:
+                sequence = np.arange(self._num_labels)  # Create a sequence from 0 to n-1
+                random_labels = np.random.permutation(sequence)
+            else:
+                random_labels = self.np_random.integers(
+                    0, self._num_labels, size=(self._maze_size**2,)
+                )
             self._respawn()
             self._set_new_goal()
             self._labels = {
@@ -196,7 +203,7 @@ class MemoryPlanningGame(gym.Env):
             }
             self._respawn()
             goal = self.goals[self._env_idx]
-            if reversal:
+            if self._reverse:
                 mirror_goal = self._mirror_position(goal)
                 tmp_lable1, tmp_lable2 = self._labels[goal], self._labels[mirror_goal]
                 self._labels[goal] = tmp_lable2
@@ -240,6 +247,12 @@ class MemoryPlanningGame(gym.Env):
     def test_mode(self):
         self._test = True
 
+    def reverse_mode(self):
+        self._reverse = True
+
+    def pos_idx(self):
+        return self.pos2idx[self._position]
+
     @property
     def position(self):
         return self._labels[self._position]
@@ -263,6 +276,10 @@ class MemoryPlanningGame(gym.Env):
     @property
     def max_episode_steps(self):
         return self._max_episode_steps
+    
+    @property
+    def maze_size(self):
+        return self._maze_size
 
     @property
     def oracle_min_num_actions(self):
