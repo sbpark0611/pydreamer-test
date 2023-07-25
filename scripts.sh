@@ -4,7 +4,6 @@
 #SBATCH --mem=0
 #SBATCH -n 1
 #SBATCH -c 2
-#sbatch --gres=gpu:1
 #SBATCH -p HQ2comp
 #SBATCH -o %x.out
 #SBATCH -e %x.err
