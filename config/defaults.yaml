@@ -41,16 +41,16 @@ defaults:
   vecobs_weight: 1.0
   reward_weight: 1.0
   terminal_weight: 1.0
-  adam_lr: 1.5e-4
-  adam_lr_actor: 0.5e-4
-  adam_lr_critic: 0.5e-4
+  adam_lr: 3.0e-4
+  adam_lr_actor: 1.0e-4
+  adam_lr_critic: 1.0e-4
   adam_eps: 1.0e-5
   keep_state: True
   batch_length: 48
   batch_size: 32
   device: "cuda:0"
-  grad_clip: 1
-  grad_clip_ac: 1
+  grad_clip: 200
+  grad_clip_ac: 200
   image_decoder_min_prob: 0
   amp: False  # AMP no longer helps on A100
   probe_gradients: False  # for baselines
