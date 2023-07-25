@@ -109,9 +109,6 @@ class OneHotActionWrapper(gym.Wrapper):
 
     def reset(self):
         r = self.env.reset()
-        print("\n\n\n\n\n\n")
-        print(r.shape)
-        print("\n\n\n\n\n\n")
         return r
 
 
