@@ -120,6 +120,10 @@ class MemoryPlanningGame(gym.Env):
 
     def _get_obs(self):
         if self.dict_space:
+            return {
+                "vecobs": np.array([(self.position - 4.5) / 4.5, (self.goal - 4.5) / 4.5, (self.previous_action - 2) / 2, 1 if self.is_respawn else 0])
+            }
+            """
             return OrderedDict(
                 [
                     ("position", self.position),
@@ -128,6 +132,7 @@ class MemoryPlanningGame(gym.Env):
                     ("reward", 1 if self.is_respawn else 0),
                 ]
             )
+            """
         else:
             return [
                 self.position,
