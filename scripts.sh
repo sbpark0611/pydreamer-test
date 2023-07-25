@@ -5,7 +5,7 @@
 #SBATCH -n 1
 #SBATCH -c 8
 #sbatch --gres=gpu:1
-#SBATCH -p jepyc
+#SBATCH -p jepyc-rtx
 #SBATCH -o %x.out
 #SBATCH -e %x.err
 #SBATCH -D /mnt/lustre/ibs/dscig/kdkyum/workdir/pydreamer-test
