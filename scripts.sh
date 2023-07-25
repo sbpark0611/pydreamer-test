@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH -J gpu_test_cpu
+#SBATCH -J cpu_test
 #SBATCH -N 1
 #SBATCH --mem=0
 #SBATCH -n 1
