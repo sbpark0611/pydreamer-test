@@ -62,7 +62,7 @@ def create_env(env_id: str, no_terminal: bool, env_time_limit: int, env_action_r
         env_time_limit = 0  # This is handled by embodied.Env
 
     elif env_id.startswith('memory_maze'):
-        from .memory_maze import tasks
+        from memory_maze import tasks
         env = tasks.memory_maze_9x9()
         env = DictWrapper(env)
 
