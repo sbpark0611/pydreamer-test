@@ -235,4 +235,4 @@ class ResetObsInfoWrapper(Wrapper):
         super().__init__(env)
 
     def reset(self):
-        return self.env.reset(), {}
+        return np.array(self.env.reset()), {}
