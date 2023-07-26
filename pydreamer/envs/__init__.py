@@ -9,6 +9,7 @@ import os
 from .wrappers import *
 
 
+
 def create_env(env_id: str, no_terminal: bool, env_time_limit: int, env_action_repeat: int, worker_id: int):
 
     if env_id.startswith('MiniGrid-'):
@@ -60,8 +61,8 @@ def create_env(env_id: str, no_terminal: bool, env_time_limit: int, env_action_r
         env_time_limit = 0  # This is handled by embodied.Env
 
     elif env_id.startswith('memory_maze'):
-        os.environ['MUJOCO_GL'] = 'glfw'
-        env = gym.make(env_id)
+        from memory_maze import tasks
+        env = tasks.memory_maze_9x9()
         env = DictWrapper(env)
 
     elif env_id.startswith('memory_planning_game'):
