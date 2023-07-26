@@ -74,7 +74,7 @@ def create_env(env_id: str, no_terminal: bool, env_time_limit: int, env_action_r
     else:
         env = DictWrapper(env)
 
-    if hasattr(env.action_space, 'n'):
+    if hasattr(env.action_set, 'n'):
         env = OneHotActionWrapper(env)
     if env_time_limit > 0:
         env = TimeLimitWrapper(env, env_time_limit)
