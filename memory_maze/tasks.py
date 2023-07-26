@@ -149,4 +149,6 @@ def _memory_maze(
             np.array([-1.0, +1.0]),  # forward + right
         ])
 
+    env = ResetObsInfoWrapper(env)
+
     return env

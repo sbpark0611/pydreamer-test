@@ -229,3 +229,10 @@ class TargetColorAsBorderWrapper(ObservationWrapper):
         img[:B, :] = target_color * 255 * 0.7
         img[-B:, :] = target_color * 255 * 0.7
         return obs
+    
+class ResetObsInfoWrapper(Wrapper):
+    def __init__(self, env: dm_env.Environment):
+        super().__init__(env)
+
+    def reset(self):
+        return self.env.reset(), {}
