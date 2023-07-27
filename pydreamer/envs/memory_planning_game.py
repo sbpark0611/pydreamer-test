@@ -131,7 +131,7 @@ class MemoryPlanningGame(gym.Env):
             position = self.one_hot_encode(self.position, self._num_labels)
             goal = self.one_hot_encode(self.goal, self._num_labels)
             prev_action = self.one_hot_encode(self.previous_action, self.NUM_ACTIONS + 1)
-            reward = 1 if self.is_respawn else 0
+            reward = np.array([1 if self.is_respawn else 0])
 
             vecobs = {}
             vecobs['vecobs'] = np.concatenate([
