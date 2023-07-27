@@ -198,15 +198,16 @@ class ImageOnlyObservationWrapper(ObservationWrapper):
 class DiscreteActionSetWrapper(Wrapper):
     """Change action space from continuous to discrete with given set of action vectors."""
 
-    def __init__(self, env: dm_env.Environment, action_space: List[np.ndarray]):
+    def __init__(self, env: dm_env.Environment, action_set: List[np.ndarray]):
         super().__init__(env)
-        self.action_space = spaces.Discrete(action_space)
+        self.action_set = action_set
+        self.action_space = spaces.Descrete(len(action_set))
 
     def action_spec(self):
-        return specs.DiscreteArray(len(self.action_space))
+        return specs.DiscreteArray(len(self.action_set))
 
     def step(self, action) -> dm_env.TimeStep:
-        return self.env.step(self.action_space[action])
+        return self.env.step(self.action_set[action])
 
 
 class TargetColorAsBorderWrapper(ObservationWrapper):
