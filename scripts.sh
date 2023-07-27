@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH -J obs_test2
+#SBATCH -J ont_hot
 #SBATCH -N 1
 #SBATCH --mem=0
 #SBATCH -n 1
