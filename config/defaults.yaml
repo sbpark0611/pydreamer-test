@@ -48,7 +48,7 @@ defaults:
   keep_state: True
   batch_length: 48
   batch_size: 32
-  device: "cuda:0"
+  device: cpu #"cuda:0"
   grad_clip: 200
   grad_clip_ac: 200
   image_decoder_min_prob: 0
