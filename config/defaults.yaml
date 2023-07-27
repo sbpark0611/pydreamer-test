@@ -260,7 +260,7 @@ procgen:
 mpg:
   env_id: memory_planning_game
   action_dim: 5
-  vecobs_size: 4
+  vecobs_size: 39
   image_key:
   image_encoder:
   image_decoder:
