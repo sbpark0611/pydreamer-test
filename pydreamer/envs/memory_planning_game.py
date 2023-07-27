@@ -118,12 +118,38 @@ class MemoryPlanningGame(gym.Env):
                 )
                 self.goals.append(fixed_goal)
 
+    def one_hot_encode(number, num_classes):
+        if number >= num_classes or number < 0:
+            raise ValueError("Number is out of range for one-hot encoding.")
+        
+        one_hot_vector = np.zeros(num_classes)
+        one_hot_vector[number] = 1
+        return one_hot_vector
+
     def _get_obs(self):
         if self.dict_space:
-            """
+            position = self.one_hot_encode(self.position, self._num_labels)
+            goal = self.one_hot_encode(self.goal, self._num_labels)
+            prev_action = self.one_hot_encode(self.previous_action, self.NUM_ACTIONS + 1)
+            reward = 1 if self.is_respawn else 0
+
+            vecobs = {}
+            vecobs['vecobs'] = np.concatenate([
+                    position,
+                    goal,
+                    prev_action,
+                    reward
+                ], axis=-1)
+            print("vecobs")
+            print("vecobs")
+            print(vecobs)
+            print(vecobs)
+            print("vecobs")
+            print("vecobs")
             return {
                 "vecobs": np.array([(self.position - 4.5) / 4.5, (self.goal - 4.5) / 4.5, (self.previous_action - 2) / 2, 1 if self.is_respawn else 0])
             }
+
             """
             return OrderedDict(
                 [
@@ -133,6 +159,7 @@ class MemoryPlanningGame(gym.Env):
                     ("reward", 1 if self.is_respawn else 0),
                 ]
             )
+            """
         else:
             return [
                 self.position,
