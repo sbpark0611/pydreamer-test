@@ -140,15 +140,7 @@ class MemoryPlanningGame(gym.Env):
                     prev_action,
                     reward
                 ], axis=-1)
-            print("vecobs")
-            print("vecobs")
-            print(vecobs)
-            print(vecobs)
-            print("vecobs")
-            print("vecobs")
-            return {
-                "vecobs": np.array([(self.position - 4.5) / 4.5, (self.goal - 4.5) / 4.5, (self.previous_action - 2) / 2, 1 if self.is_respawn else 0])
-            }
+            return vecobs
 
             """
             return OrderedDict(
