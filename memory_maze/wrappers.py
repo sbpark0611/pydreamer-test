@@ -201,7 +201,7 @@ class DiscreteActionSetWrapper(Wrapper):
     def __init__(self, env: dm_env.Environment, action_set: List[np.ndarray]):
         super().__init__(env)
         self.action_set = action_set
-        self.action_space = spaces.Descrete(len(action_set))
+        self.action_space = spaces.Discrete(len(action_set))
 
     def action_spec(self):
         return specs.DiscreteArray(len(self.action_set))
