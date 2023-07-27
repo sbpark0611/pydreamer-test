@@ -118,7 +118,7 @@ class MemoryPlanningGame(gym.Env):
                 )
                 self.goals.append(fixed_goal)
 
-    def one_hot_encode(number, num_classes):
+    def one_hot_encode(self, number, num_classes):
         if number >= num_classes or number < 0:
             raise ValueError("Number is out of range for one-hot encoding.")
         
