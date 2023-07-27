@@ -238,6 +238,6 @@ class ObsInfoWrapper(Wrapper):
     def reset(self):
         return np.array(self.env.reset()), {}
     
-    def step(self):
-        obs, reward, terminated, info = self.env.step()
+    def step(self, action):
+        obs, reward, terminated, info = self.env.step(action)
         return obs, reward, terminated, False, info
