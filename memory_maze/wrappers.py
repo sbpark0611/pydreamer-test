@@ -5,6 +5,7 @@ from typing import Any, Dict, List
 import dm_env
 import numpy as np
 from dm_env import specs
+from gymnasium import spaces
 
 class Wrapper(dm_env.Environment):
     """Base class for dm_env.Environment wrapper."""
