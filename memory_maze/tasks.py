@@ -5,6 +5,7 @@ from dm_control.locomotion.arenas import labmaze_textures
 from memory_maze.maze import *
 from memory_maze.oracle import DrawMinimapWrapper, PathToTargetWrapper
 from memory_maze.wrappers import *
+from memory_maze.gym_wrappers import *
 
 # Slow control (4Hz), so that agent without HRL has a chance.
 # Native control would be ~20Hz, so this corresponds roughly to action_repeat=5.
@@ -149,6 +150,6 @@ def _memory_maze(
             np.array([-1.0, +1.0]),  # forward + right
         ])
 
-    env = ObsInfoWrapper(env)
+    env = GymWrapper(env)
 
     return env

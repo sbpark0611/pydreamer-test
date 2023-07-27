@@ -16,7 +16,7 @@ class GymWrapper(gym.Env):
 
     def reset(self) -> Any:
         ts = self.env.reset()
-        return ts.observation
+        return ts.observation, {}
 
     def step(self, action) -> Tuple[Any, float, bool, dict]:
         ts = self.env.step(action)
@@ -27,7 +27,7 @@ class GymWrapper(gym.Env):
         info = {}
         if done and not terminal:
             info['TimeLimit.truncated'] = True  # acme.GymWrapper understands this and converts back to dm_env.truncation()
-        return ts.observation, ts.reward, done, info
+        return ts.observation, ts.reward, done, False, info
 
 
 def _convert_to_space(spec: Any) -> gym.Space:

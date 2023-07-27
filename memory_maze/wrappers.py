@@ -49,25 +49,6 @@ class ObservationWrapper(Wrapper):
     def observation(self, obs: Any) -> Any:
         raise NotImplementedError
 
-    def step(self, action):
-        step_type, discount, reward, observation = self.env.step(action)
-        print('\n\n\n\n\n\n\n\n')
-        print(step_type)
-        print(type(step_type))
-        print(discount)
-        print(type(discount))
-        print(reward)
-        print(type(reward))
-        print(observation)
-        print(type(observation))
-        print('\n\n\n\n\n\n\n\n')
-        return (step_type, discount, reward, self.observation(observation))
-
-    def reset(self):
-        step_type, discount, reward, observation = self.env.reset()
-        return dm_env.TimeStep(step_type, discount, reward, self.observation(observation))
-    
-    '''
     def step(self, action) -> dm_env.TimeStep:
         step_type, discount, reward, observation = self.env.step(action)
         return dm_env.TimeStep(step_type, discount, reward, self.observation(observation))
@@ -75,7 +56,6 @@ class ObservationWrapper(Wrapper):
     def reset(self) -> dm_env.TimeStep:
         step_type, discount, reward, observation = self.env.reset()
         return dm_env.TimeStep(step_type, discount, reward, self.observation(observation))
-    '''
 
 
 class RemapObservationWrapper(ObservationWrapper):
@@ -250,14 +230,3 @@ class TargetColorAsBorderWrapper(ObservationWrapper):
         img[:B, :] = target_color * 255 * 0.7
         img[-B:, :] = target_color * 255 * 0.7
         return obs
-    
-class ObsInfoWrapper(Wrapper):
-    def __init__(self, env: dm_env.Environment):
-        super().__init__(env)
-
-    def reset(self):
-        return np.array(self.env.reset()), {}
-    
-    def step(self, action):
-        obs, reward, terminated, info = self.env.step(action)
-        return np.array(obs), reward, terminated, False, info
