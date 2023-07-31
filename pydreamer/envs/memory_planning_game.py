@@ -161,6 +161,8 @@ class MemoryPlanningGame(gym.Env):
             ]
 
     def _get_info(self):
+        return self._episode_steps
+        """
         return {
             "distance": np.linalg.norm(
                 np.array(self._position) - np.array(self._goal), ord=1
@@ -172,6 +174,7 @@ class MemoryPlanningGame(gym.Env):
             else -1,
             "pos": self.pos2idx[self._position],
         }
+        """
 
     def step(self, action):
         self._episode_steps += 1
@@ -201,7 +204,7 @@ class MemoryPlanningGame(gym.Env):
 
     def reset(self, seed=None):
         super().reset(seed=seed)
-
+        
         self._prev_action = 5
         self._prev_position = None
         self._episode_reward = 0.0

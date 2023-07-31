@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH -J 3d
+#SBATCH -J onehot
 #SBATCH -N 1
 #SBATCH --mem=0
 #SBATCH -n 1
@@ -17,4 +17,4 @@ conda activate pydreamer
 export WANDB_MODE=offline
 export PYTHONPATH='.'
 
-python launch.py --configs defaults memmaze
+python launch.py --configs defaults mpg
