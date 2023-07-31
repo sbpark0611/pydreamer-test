@@ -8,7 +8,7 @@
 #SBATCH -p jepyc
 #SBATCH -o %x.out
 #SBATCH -e %x.err
-#SBATCH -D /mnt/lustre/ibs/dscig/kdkyum/workdir/pydreamer-test
+#SBATCH -D /proj/internal_group/dscig/kdkyum/pydreamer-test
 
 __conda_setup="$('/opt/olaf/anaconda3/2020.11/GNU/4.8/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 eval "$__conda_setup"
