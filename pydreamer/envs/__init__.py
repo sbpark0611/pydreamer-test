@@ -70,12 +70,6 @@ def create_env(env_id: str, no_terminal: bool, env_time_limit: int, env_action_r
         from .memory_planning_game import MemoryPlanningGame
         env = MemoryPlanningGame()
         env = DictWrapper(env)
-        '''
-        print("\n\n\n\n\n\n\n\n\n")
-        print(type(env.action_space))
-        print(type(env.reset()))
-        print("\n\n\n\n\n\n\n\n\n")
-        '''
 
     else:
         env = DictWrapper(env)
