@@ -267,6 +267,7 @@ def run(conf):
 
                     if steps >= conf.n_steps:
                         info(f'Finished {conf.n_steps} grad steps.')
+                        saveDataForGraph()
                         return
 
                 # Evaluate
@@ -301,6 +302,101 @@ def run(conf):
                      f"  eval: {timer('eval').dt_ms:>4}"
                      f"  other: {timer('other').dt_ms:>4}"
                      )
+
+def saveDataForGraph():
+    start_time = time.time()
+    metrics_eval = defaultdict(list)
+    state = None
+    tensors = None
+    npz_datas = []
+    n_finished_episodes = np.zeros(1)
+    do_output_tensors = True
+
+    for i_batch in range(eval_batches):
+        with torch.no_grad():
+
+            batch = next(data_iterator)
+            obs: Dict[str, Tensor] = map_structure(batch, lambda x: x.to(device))  # type: ignore
+            T, B = obs['action'].shape[:2]
+
+            if i_batch == 0:
+                info(f'Evaluation ({prefix}): batches: {eval_batches},  size(T,B,I): ({T},{B},{eval_samples})')
+
+            reset_episodes = obs['reset'].any(dim=0)  # (B,)
+            n_reset_episodes = reset_episodes.sum().item()
+            n_continued_episodes = (~reset_episodes).sum().item()
+            if i_batch == 0:
+                n_finished_episodes = np.zeros(B)
+            else:
+                n_finished_episodes += reset_episodes.cpu().numpy()
+
+            # Log _last predictions from the last batch of previous episode # TODO: make generic for goal probes
+
+            if n_reset_episodes > 0 and tensors is not None and 'loss_map' in tensors:
+                logprob_map_last = (tensors['loss_map'].mean(dim=0) * reset_episodes).sum() / reset_episodes.sum()
+                metrics_eval['logprob_map_last'].append(logprob_map_last.item())
+
+            # Open loop & unseen logprob
+
+            if n_continued_episodes > 0:
+                with autocast(enabled=conf.amp):
+                    _, _, _, tensors_im, _ = \
+                        model.training_step(obs,  # observation will be ignored in forward pass because of imagine=True
+                                            state,
+                                            iwae_samples=eval_samples,
+                                            imag_horizon=conf.imag_horizon,
+                                            do_open_loop=True,
+                                            do_image_pred=True)
+
+                    if np.random.rand() < 0.10:  # Save a small sample of batches
+                        r = obs['reward'].sum().item()
+                        log_batch_npz(batch, tensors_im, f'{steps:07}_{i_batch}_r{r:.0f}.npz', subdir=f'd2_wm_open_{prefix}')
+
+                    mask = (~reset_episodes).float()
+                    for key, logprobs in tensors_im.items():
+                        if key.startswith('logprob_'):  # logprob_image, logprob_reward, ...
+                            # Many logprobs will be nans - that's fine. Just take mean of those tahat exist
+                            lps = logprobs[:5] * mask / mask  # set to nan where ~mask
+                            lp = nanmean(lps).item()
+                            if not np.isnan(lp):
+                                metrics_eval[f'{key}_open'].append(lp)  # logprob_image_open, ...
+
+            # Closed loop & loss
+
+            with autocast(enabled=conf.amp):
+                if state is None or not keep_state:
+                    state = model.init_state(B * eval_samples)
+
+                _, state, loss_metrics, tensors, _ = \
+                    model.training_step(obs,
+                                        state,
+                                        iwae_samples=eval_samples,
+                                        imag_horizon=conf.imag_horizon,
+                                        do_image_pred=True)
+
+                for k, v in loss_metrics.items():
+                    if not np.isnan(v.item()):
+                        metrics_eval[k].append(v.item())
+
+            # Log one episode batch
+
+            if do_output_tensors:
+                npz_datas.append(prepare_batch_npz(dict(**batch, **tensors), take_b=save_size))
+            if n_finished_episodes[0] > 0:
+                # log predictions until first episode is finished
+                do_output_tensors = False
+
+    metrics_eval = {f'{prefix}/{k}': np.array(v).mean() for k, v in metrics_eval.items()}
+    mlflow_log_metrics(metrics_eval, step=steps)
+
+    if len(npz_datas) > 0:
+        npz_data = {k: np.concatenate([d[k] for d in npz_datas], 1) for k in npz_datas[0]}
+        print_once(f'Saving batch d2_wm_closed_{prefix}: ', {k: tuple(v.shape) for k, v in npz_data.items()})
+        r = npz_data['reward'][0].sum().item()
+        tools.mlflow_log_npz(npz_data, f'{steps:07}_r{r:.0f}.npz', subdir=f'd2_wm_closed_{prefix}', verbose=True)
+
+    info(f'Evaluation ({prefix}): done in {(time.time()-start_time):.0f} sec, recorded {n_finished_episodes.sum()} episodes')
+
 
 
 def evaluate(prefix: str,
