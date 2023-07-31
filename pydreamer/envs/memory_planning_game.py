@@ -128,6 +128,7 @@ class MemoryPlanningGame(gym.Env):
 
     def _get_obs(self):
         if self.dict_space:
+            """
             position = self.one_hot_encode(self.position, self._num_labels)
             goal = self.one_hot_encode(self.goal, self._num_labels)
             prev_action = self.one_hot_encode(self.previous_action, self.NUM_ACTIONS + 1)
@@ -140,6 +141,12 @@ class MemoryPlanningGame(gym.Env):
                     prev_action,
                     reward
                 ], axis=-1)
+            """
+            vecobs = {"vecobs": np.array([(self.position - 7.5) / 7.5, 
+                                          (self.goal - 7.5) / 7.5, 
+                                          (self.previous_action - 2) / 2, 
+                                          1 if self.is_respawn else 0])}
+
             return vecobs
 
             """
