@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH -J graph
+#SBATCH -J normal
 #SBATCH -N 1
 #SBATCH --mem=0
 #SBATCH -n 1
