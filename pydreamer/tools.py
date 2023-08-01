@@ -48,7 +48,7 @@ def read_yamls(dir):
 
 def mlflow_init(wait_for_resume=False, custom_run_name=""):
     import mlflow
-    run_name = "onehot" #os.environ.get('MLFLOW_RUN_NAME')
+    run_name = "graph" #os.environ.get('MLFLOW_RUN_NAME')
     resume_id = os.environ.get('MLFLOW_RESUME_ID')
     uri = os.environ.get('MLFLOW_TRACKING_URI', 'local')
 

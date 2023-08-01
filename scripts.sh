@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH -J onehot
+#SBATCH -J graph
 #SBATCH -N 1
 #SBATCH --mem=0
 #SBATCH -n 1
