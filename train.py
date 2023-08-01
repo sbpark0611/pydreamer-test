@@ -267,7 +267,7 @@ def run(conf):
 
                     if steps >= conf.n_steps:
                         info(f'Finished {conf.n_steps} grad steps.')
-                        saveDataForGraph()
+                        #saveDataForGraph()
                         return
 
                 # Evaluate
@@ -302,7 +302,7 @@ def run(conf):
                      f"  eval: {timer('eval').dt_ms:>4}"
                      f"  other: {timer('other').dt_ms:>4}"
                      )
-
+"""
 def saveDataForGraph():
     start_time = time.time()
     metrics_eval = defaultdict(list)
@@ -396,7 +396,7 @@ def saveDataForGraph():
         tools.mlflow_log_npz(npz_data, f'{steps:07}_r{r:.0f}.npz', subdir=f'd2_wm_closed_{prefix}', verbose=True)
 
     info(f'Evaluation ({prefix}): done in {(time.time()-start_time):.0f} sec, recorded {n_finished_episodes.sum()} episodes')
-
+"""
 
 
 def evaluate(prefix: str,
