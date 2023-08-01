@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH -J normal
+#SBATCH -J onehot
 #SBATCH -N 1
 #SBATCH --mem=0
 #SBATCH -n 1
