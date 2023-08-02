@@ -168,7 +168,7 @@ class MemoryPlanningGame(gym.Env):
             ]
 
     def _get_info(self):
-        return {"_episode_steps": self._episode_steps}
+        return {"episode_steps": self._episode_steps}
         """
         return {
             "distance": np.linalg.norm(

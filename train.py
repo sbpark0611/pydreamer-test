@@ -20,6 +20,9 @@ from pydreamer.models.functions import map_structure, nanmean
 from pydreamer.preprocessing import Preprocessor, WorkerInfoPreprocess
 from pydreamer.tools import *
 
+from pydreamer.envs import create_env
+from generator import create_policy
+
 
 def run(conf):
     
@@ -266,8 +269,9 @@ def run(conf):
                     # Stop
 
                     if steps >= conf.n_steps:
+                        tools.mlflow_save_checkpoint(model, optimizers, steps)
+                        drawGraph(conf)
                         info(f'Finished {conf.n_steps} grad steps.')
-                        saveDataForGraph()
                         return
 
                 # Evaluate
@@ -302,6 +306,29 @@ def run(conf):
                      f"  eval: {timer('eval').dt_ms:>4}"
                      f"  other: {timer('other').dt_ms:>4}"
                      )
+
+def drawGraph(conf):
+    env = create_env(conf.env_id, conf.env_no_terminal, conf.env_time_limit, conf.env_action_repeat, -1)
+    policy = create_policy("network", env, conf)
+
+    while True:
+        # takes ~10sec to load checkpoint
+        model_step = mlflow_load_checkpoint(policy.model, map_location='cpu')  # type: ignore
+        if model_step:
+            info(f'Generator loaded model checkpoint {model_step}')
+            break
+        else:
+            debug('Generator model checkpoint not found, waiting...')
+            time.sleep(10)
+
+    obs = env.reset()
+    done = False
+    steps = 0
+    while not done:
+        action, mets = policy(obs)
+        obs, reward, done, inf = env.step(action)
+        steps += 1
+        print("steps: ", steps, "reward: ", reward, "episode_steps: ", inf["episode_steps"])
 
 def evaluate(prefix: str,
              steps: int,
