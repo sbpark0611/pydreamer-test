@@ -230,6 +230,8 @@ def run(conf):
                         metrics['data_steps'].append(data_train_stats.stats_steps)
                         metrics['data_env_steps'].append(data_train_stats.stats_steps * conf.env_action_repeat)
                         if data_train_stats.stats_steps * conf.env_action_repeat >= conf.n_env_steps:
+                            tools.mlflow_save_checkpoint(model, optimizers, steps)
+                            drawGraph(conf)
                             info(f'Finished {conf.n_env_steps} env steps.')
                             return
 
