@@ -231,7 +231,7 @@ def run(conf):
                         metrics['data_env_steps'].append(data_train_stats.stats_steps * conf.env_action_repeat)
                         if data_train_stats.stats_steps * conf.env_action_repeat >= conf.n_env_steps:
                             tools.mlflow_save_checkpoint(model, optimizers, steps)
-                            drawGraph(conf)
+                            drawGraph(conf, 100)
                             info(f'Finished {conf.n_env_steps} env steps.')
                             return
 
@@ -272,7 +272,7 @@ def run(conf):
 
                     if steps >= conf.n_steps:
                         tools.mlflow_save_checkpoint(model, optimizers, steps)
-                        drawGraph(conf)
+                        drawGraph(conf, 100)
                         info(f'Finished {conf.n_steps} grad steps.')
                         return
 
@@ -309,10 +309,12 @@ def run(conf):
                      f"  other: {timer('other').dt_ms:>4}"
                      )
 
-def drawGraph(conf):
+def drawGraph(conf, test_len):
+    # create env and policy
     env = create_env(conf.env_id, conf.env_no_terminal, conf.env_time_limit, conf.env_action_repeat, -1)
     policy = create_policy("network", env, conf)
 
+    # load policy
     while True:
         # takes ~10sec to load checkpoint
         model_step = mlflow_load_checkpoint(policy.model, map_location='cpu')  # type: ignore
@@ -323,14 +325,33 @@ def drawGraph(conf):
             debug('Generator model checkpoint not found, waiting...')
             time.sleep(10)
 
-    obs = env.reset()
-    done = False
-    steps = 0
-    while not done:
-        action, mets = policy(obs)
-        obs, reward, done, inf = env.step(action)
-        steps += 1
-        print("steps: ", steps, "reward: ", reward, "episode_steps: ", inf["episode_steps"])
+    # simulate and get steps per task
+    steps_per_task = [[] for _ in range(test_len)]
+    for i in range(test_len):
+        obs = env.reset()
+        done = False
+        prev_reward = 0
+        prev_steps = 0
+        while not done:
+            action, mets = policy(obs)
+            obs, reward, done, inf = env.step(action)
+            if reward > prev_reward:
+                steps_per_task[i].append(inf["episode_steps"] - prev_steps)
+
+    # calculate mean steps per task and log by mlflow
+    mean_steps_per_task = []
+    task = 0
+    while True:
+        lst = []
+        for i in range(test_len):
+            if len(steps_per_task[i]) > task:
+                lst.append(steps_per_task[i][task])
+        if len(lst) == 0:
+            break
+        mean_steps_per_task.append(sum(lst) / len(lst))
+
+    for i in range(len(mean_steps_per_task)):
+        mlflow_log_metrics({"number_of_steps_to_goal": mean_steps_per_task[i]}, step=i+1)
 
 def evaluate(prefix: str,
              steps: int,
