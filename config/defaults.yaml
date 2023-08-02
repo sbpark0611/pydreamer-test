@@ -1,7 +1,7 @@
 defaults:
   # Job
-  n_steps: 100_000
-  n_env_steps: 1000_000
+  n_steps: 50_000
+  n_env_steps: 500_000
   offline_data_dir:
   offline_prefill_dir:
   offline_test_dir:
