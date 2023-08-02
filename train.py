@@ -338,6 +338,8 @@ def drawGraph(conf, test_len):
             obs, reward, done, inf = env.step(action)
             if reward > prev_reward:
                 steps_per_task[i].append(inf["episode_steps"] - prev_steps)
+                prev_steps = inf["episode_steps"]
+                prev_reward = reward
 
     # calculate mean steps per task and log by mlflow
     mean_steps_per_task = []
