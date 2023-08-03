@@ -330,7 +330,6 @@ def drawGraph(conf, test_len):
     for i in range(test_len):
         obs = env.reset()
         done = False
-        prev_reward = 0
         prev_steps = 0
         info(f'Drawing graph: episode {i}')
         while not done:
@@ -338,7 +337,7 @@ def drawGraph(conf, test_len):
             obs, reward, done, inf = env.step(action)
             print(inf["episode_steps"], prev_steps)
             print(reward, prev_reward)
-            if reward > prev_reward:
+            if reward == 1:
                 print("saved!")
                 steps_per_task[i].append(inf["episode_steps"] - prev_steps)
                 prev_steps = inf["episode_steps"]
@@ -356,7 +355,7 @@ def drawGraph(conf, test_len):
         
         if len(lst) == 0:
             break
-        
+
         print(sum(lst) / len(lst))
         mean_steps_per_task.append(sum(lst) / len(lst))
 
