@@ -335,13 +335,11 @@ def drawGraph(conf, test_len):
         while not done:
             action, mets = policy(obs)
             obs, reward, done, inf = env.step(action)
-            print(inf["episode_steps"], prev_steps)
-            print(reward, prev_reward)
+            print(reward)
             if reward == 1:
-                print("saved!")
+                print(inf["episode_steps"], prev_steps)
                 steps_per_task[i].append(inf["episode_steps"] - prev_steps)
                 prev_steps = inf["episode_steps"]
-                prev_reward = reward
 
     # calculate mean steps per task and log by mlflow
     mean_steps_per_task = []
