@@ -1,7 +1,7 @@
 defaults:
   # Job
-  n_steps: 50_000
-  n_env_steps: 500_000
+  n_steps: 100_0000
+  n_env_steps: 1000_0000
   offline_data_dir:
   offline_prefill_dir:
   offline_test_dir:
@@ -110,7 +110,7 @@ defaults:
   generator_workers: 8        # train+eval generators
   generator_workers_train: 0  # train-only generators
   generator_workers_eval: 0   # eval-only generators
-  generator_prefill_steps: 10_000
+  generator_prefill_steps: 50_000
   generator_prefill_policy: random
   limit_step_ratio: 0
   env_id:

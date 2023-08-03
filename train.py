@@ -231,7 +231,7 @@ def run(conf):
                         metrics['data_env_steps'].append(data_train_stats.stats_steps * conf.env_action_repeat)
                         if data_train_stats.stats_steps * conf.env_action_repeat >= conf.n_env_steps:
                             tools.mlflow_save_checkpoint(model, optimizers, steps)
-                            drawGraph(conf, 10)
+                            drawGraph(conf, 500)
                             info(f'Finished {conf.n_env_steps} env steps.')
                             return
 
@@ -272,7 +272,7 @@ def run(conf):
 
                     if steps >= conf.n_steps:
                         tools.mlflow_save_checkpoint(model, optimizers, steps)
-                        drawGraph(conf, 10)
+                        drawGraph(conf, 500)
                         info(f'Finished {conf.n_steps} grad steps.')
                         return
 
@@ -335,9 +335,7 @@ def drawGraph(conf, test_len):
         while not done:
             action, mets = policy(obs)
             obs, reward, done, inf = env.step(action)
-            print(reward)
             if reward == 1:
-                print(inf["episode_steps"], prev_steps)
                 steps_per_task[i].append(inf["episode_steps"] - prev_steps)
                 prev_steps = inf["episode_steps"]
 
@@ -354,7 +352,6 @@ def drawGraph(conf, test_len):
         if len(lst) == 0:
             break
 
-        print(sum(lst) / len(lst))
         mean_steps_per_task.append(sum(lst) / len(lst))
 
     for i in range(len(mean_steps_per_task)):
