@@ -336,13 +336,11 @@ def drawGraph(conf, test_len):
         while not done:
             action, mets = policy(obs)
             obs, reward, done, inf = env.step(action)
+            print(inf["episode_steps"], prev_steps)
+            print(reward, prev_reward)
             if reward > prev_reward:
+                print("saved!")
                 steps_per_task[i].append(inf["episode_steps"] - prev_steps)
-                print('\n\n')
-                print(i)
-                print(inf["episode_steps"], prev_steps)
-                print(prev_reward, reward)
-                print('\n\n')
                 prev_steps = inf["episode_steps"]
                 prev_reward = reward
 
@@ -358,7 +356,8 @@ def drawGraph(conf, test_len):
         
         if len(lst) == 0:
             break
-
+        
+        print(sum(lst) / len(lst))
         mean_steps_per_task.append(sum(lst) / len(lst))
 
     for i in range(len(mean_steps_per_task)):
