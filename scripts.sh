@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH -J clip1.0_short
+#SBATCH -J clip0.5_short
 #SBATCH -N 1
 #SBATCH --mem=0
 #SBATCH -n 1
