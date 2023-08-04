@@ -349,7 +349,7 @@ def drawGraph(conf, test_len):
                 lst.append(steps_per_task[i][task])
         task += 1
         
-        if len(lst) == 0:
+        if len(lst) < 2:
             break
 
         mean_steps_per_task.append(sum(lst) / len(lst))
